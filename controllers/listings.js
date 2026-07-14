@@ -27,6 +27,15 @@ module.exports.showListing = async(req, res) =>{
     res.render("./listings/show.ejs", {listing});
 };
 
+module.exports.filterByCategory = async (req, res) => {
+    const { category } = req.params;
+
+    const allListings = await Listing.find({ category });
+
+    res.render("listings/index.ejs", { allListings });
+};
+
+
 module.exports.createListing = async (req, res, next) => {
     let url = req.file.path;
     let filename = req.file.filename;
@@ -82,12 +91,7 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
-    // let data = req.body.listing;
-    // if (!data.image || data.image.trim() === "") {
-    //     delete data.image;
-    // } else {
-    //     data.image = { url: data.image };
-    // }
+
     let listing = await Listing.findByIdAndUpdate(id, {...req.body.listing});
     
     if (typeof req.file != "undefined"){
@@ -110,11 +114,3 @@ module.exports.destroyListing = async(req, res) =>{
 };
 
 
-// Create listing rough code
-        // let data = req.body.listing;
-        // const newListing = new Listing({
-        //     ...data,
-        //     image: data.image ? { url: data.image } : {}
-        // });
-        // newListing.owner = req.user._id;
-        // await newListing.save();
